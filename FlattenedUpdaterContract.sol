@@ -1,7 +1,67 @@
+// File: contracts/ILightClient.sol
+
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.4.22 <0.9.0;
 
-import "./LightClient.sol";
+interface ILightClient {
+    function update(
+        bytes calldata currBlockHeader,
+        bytes calldata prevBlockHeader
+    ) external;
+
+    function verify(
+        bytes calldata proof,
+        bytes calldata currBlockHeader,
+        bytes calldata prevBlockHeader
+    ) external view returns (bool);
+
+    function verifyBatch(
+        bytes calldata proof,
+        bytes[] calldata headers
+    ) external view returns (bool);
+}
+
+// File: contracts/LightClient.sol
+
+pragma solidity >=0.4.22 <0.9.0;
+
+contract LightClient is ILightClient {
+    struct lightClientState {
+        bool notImplemented;
+    }
+
+    lightClientState private LCS;
+
+    function update(
+        bytes memory /* currBlockHeader */,
+        bytes memory /* prevBlockHeader */
+    ) public override {
+        LCS.notImplemented = true;
+    }
+
+    function verify(
+        bytes memory /* proof */,
+        bytes memory /* currBlockHeader */,
+        bytes memory /* prevBlockHeader */
+    ) public view override returns(bool) {
+        // Read LCS to prevent compiler telling us to change view -> pure
+        // Dummy implementation always returns true
+        return LCS.notImplemented || !LCS.notImplemented;
+    }
+
+    function verifyBatch(
+        bytes memory /* proof */,
+        bytes[] memory /* headers */
+    ) public view override returns(bool) {
+        // Read LCS to prevent compiler telling us to change view -> pure
+        // Dummy implementation always returns true
+        return LCS.notImplemented || !LCS.notImplemented;
+    }
+}
+
+// File: contracts/UpdaterContract.sol
+
+pragma solidity >=0.4.22 <0.9.0;
 
 contract UpdaterContract {
     LightClient private lightClient;
